@@ -10,28 +10,28 @@ public class GameController
     private Dictionary<IPlayer, List<ICard>> _hands;
     private List<IPlayer> _players;
     private GameDirection _direction;
-    private List<ICard> _drawPile;
-    private List<ICard> _discardPile;
+    private IDrawPile _drawPile;
+    private IDiscardPile? _discardPile;
     private int _currentPlayerIndex;
     private ICard? _drawnCardThisTurn;
     private List<IPlayer> _unoPendingPlayers;
 
     //Action Declaration
-    public event Action<IPlayer> OnTurnStarted;
-    public event Action<IPlayer> OnCardPlayed;
-    public event Action<IPlayer> OnUnoCalled;
-    public event Action<IPlayer> OnUnoPenaltyApplied;
-    public event Action<IPlayer, int> OnRoundEnded;
-    public event Action<IPlayer> OnGameEnded;
+    public event Action<IPlayer>? OnTurnStarted;
+    public event Action<IPlayer>? OnCardPlayed;
+    public event Action<IPlayer>? OnUnoCalled;
+    public event Action<IPlayer>? OnUnoPenaltyApplied;
+    public event Action<IPlayer, int>? OnRoundEnded;
+    public event Action<IPlayer>? OnGameEnded;
 
     //Constructor Declaration
     public GameController (List<IPlayer> players, IDrawPile drawPile){
         _currentColor = null;
         _hands = new Dictionary<IPlayer, List<ICard>>();
-        _players = new List<IPlayer>();
-        _direction = new GameDirection();
-        _drawPile = new List<ICard>();
-        _discardPile = new List<ICard>();
+        _players = players;
+        _direction = GameDirection.ClockWise;
+        _drawPile = drawPile;
+        _discardPile = null;
         _currentPlayerIndex = 0;
         _drawnCardThisTurn = null;
         _unoPendingPlayers = new List<IPlayer>();
