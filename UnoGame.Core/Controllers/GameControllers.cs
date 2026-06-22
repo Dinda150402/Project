@@ -22,7 +22,7 @@ public class GameController
     public event Action<IPlayer>? OnUnoCalled;
     public event Action<IPlayer>? OnUnoPenaltyApplied;
     public event Action<IPlayer, int>? OnRoundEnded;
-    public event Action<IPlayer>? OnGameEnded;
+    public event Action<IPlayer, ICard>? OnGameEnded;
 
     //Constructor Declaration
     public GameController (List<IPlayer> players, IDrawPile drawPile){
