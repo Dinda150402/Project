@@ -21,8 +21,8 @@ public class GameController
     public event Action<IPlayer>? OnCardPlayed;
     public event Action<IPlayer>? OnUnoCalled;
     public event Action<IPlayer>? OnUnoPenaltyApplied;
-    public event Action<IPlayer, int>? OnRoundEnded;
-    public event Action<IPlayer, ICard>? OnGameEnded;
+    public event Action<IPlayer,int>? OnRoundEnded;
+    public event Action<IPlayer>? OnGameEnded;
 
     //Constructor Declaration
     public GameController (List<IPlayer> players, IDrawPile drawPile){
@@ -70,27 +70,27 @@ public class GameController
 
     public IPlayer GetCurrentPlayer()
     {
-        throw new NotImplementedException();
+        return _players[_currentPlayerIndex];
     }
 
     public CardColor GetCurrentColor()
     {
-        throw new NotImplementedException();
+        return _currentColor ?? throw new InvalidOperationException("Current color is not set.");
     }
 
     public ICard GetTopDiscardCard()
     {
-        throw new NotImplementedException();
+        return _discardPile!.Cards[_discardPile!.Cards.Count - 1];
     }
 
     public List<IPlayer> GetPlayers()
     {
-        throw new NotImplementedException();
+        return _players;
     }
 
     public List<ICard> GetPlayerHand(IPlayer player)
     {
-        throw new NotImplementedException();
+        return _hands.ContainsKey(player) ? _hands[player] : new List<ICard>();
     }
 
     public List<ICard> GetValidCards(IPlayer player)
