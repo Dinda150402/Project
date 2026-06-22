@@ -85,12 +85,17 @@ public class GameController
 
     public List<IPlayer> GetPlayers()
     {
-        return _players;
+        return _players.AsReadOnly().ToList();
     }
 
     public List<ICard> GetPlayerHand(IPlayer player)
     {
-        return _hands.ContainsKey(player) ? _hands[player] : new List<ICard>();
+        if (_hands == null)
+        {
+            throw new InvalidOperationException("Hands are not initialized. Start the game first.");
+        }
+
+        return _hands.TryGetValue(player, out var hand) ? hand : new List<ICard>();
     }
 
     public List<ICard> GetValidCards(IPlayer player)
