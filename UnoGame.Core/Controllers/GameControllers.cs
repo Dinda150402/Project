@@ -90,12 +90,12 @@ public class GameController
 
     public List<ICard> GetPlayerHand(IPlayer player)
     {
-        if (_hands == null)
+        if (_hands.TryGetValue(player, out var hand))
         {
-            throw new InvalidOperationException("Hands are not initialized. Start the game first.");
+            return hand.AsReadOnly().ToList();
         }
-
-        return _hands.TryGetValue(player, out var hand) ? hand : new List<ICard>();
+        
+        throw new ArgumentException("Player not found in the game.");
     }
 
     public List<ICard> GetValidCards(IPlayer player)
