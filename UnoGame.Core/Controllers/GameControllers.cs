@@ -139,10 +139,10 @@ public class GameController
     {
         int n = _drawPile.Cards.Count;
 
-        n--;
         while (n > 1)
         {
-            int k = Random.Shared.Next(n);
+            n--;
+            int k = Random.Shared.Next(n+1);
 
             var value = _drawPile.Cards[k];
             _drawPile.Cards[k] = _drawPile.Cards[n];
