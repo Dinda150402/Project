@@ -41,13 +41,33 @@ public class GameController
     //Method Declaration
     public void StartGame()
     {
-        var player = GetPlayers();
-        if(player != null && player.Count >= 2)
+        if(_players.Count >= 2)
         {
-            Console.WriteLine("Memulai Permainan");
             Shuffle();
-        }
-        throw new InvalidOperationException("Maaf Jumlah Pemain Kurang");
+            foreach (IPlayer player in _players)
+            {
+                _hands [player] = new List<ICard>();
+                for(int i = 1; i <= 7; i++)
+                {
+                    if(_drawPile.Cards.Count > 0)
+                    {
+                        ICard drawnCard = _drawPile.Cards[_drawPile.Cards.Count-1];
+                        _hands[player].Add(drawnCard);
+                        _drawPile.Cards.RemoveAt(_drawPile.Cards.Count-1);
+                    }
+                }
+            }
+
+            ICard starterCard = _drawPile.Cards[_drawPile.Cards.Count -1];
+            _drawPile.Cards.RemoveAt(_drawPile.Cards.Count -1);
+            _discardPile = new DiscardPile(starterCard);
+            _currentColor = starterCard.Color ?? CardColor.Red;
+
+            IPlayer firstPlayer = _players[_currentPlayerIndex];
+            OnTurnStarted?.Invoke(firstPlayer);
+
+        } else {
+            throw new InvalidOperationException("Jumlah Player Minimal 2 orang");}
     }
 
     public void PlayCard(IPlayer players, ICard card, CardColor? chosenColor)
@@ -119,6 +139,7 @@ public class GameController
     {
         int n = _drawPile.Cards.Count;
 
+        n--;
         while (n > 1)
         {
             int k = Random.Shared.Next(n);
