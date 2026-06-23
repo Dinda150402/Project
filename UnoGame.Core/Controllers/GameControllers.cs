@@ -1,5 +1,6 @@
 using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
+using UnoGame.Core.Models;
 
 namespace UnoGame.Core.Controllers;
 
@@ -40,10 +41,16 @@ public class GameController
     //Method Declaration
     public void StartGame()
     {
-        throw new NotImplementedException();
+        var player = GetPlayers();
+        if(player != null && player.Count >= 2)
+        {
+            Console.WriteLine("Memulai Permainan");
+            Shuffle();
+        }
+        throw new InvalidOperationException("Maaf Jumlah Pemain Kurang");
     }
 
-    public void PlayCard(IPlayer player, ICard card, CardColor? chosenColor)
+    public void PlayCard(IPlayer players, ICard card, CardColor? chosenColor)
     {
         throw new NotImplementedException();
     }
@@ -85,7 +92,7 @@ public class GameController
 
     public List<IPlayer> GetPlayers()
     {
-        return _players.AsReadOnly().ToList();
+        return _players.ToList();
     }
 
     public List<ICard> GetPlayerHand(IPlayer player)
@@ -110,7 +117,16 @@ public class GameController
 
     private void Shuffle()
     {
-        throw new NotImplementedException();
+        int n = _drawPile.Cards.Count;
+
+        while (n > 1)
+        {
+            int k = Random.Shared.Next(n);
+
+            var value = _drawPile.Cards[k];
+            _drawPile.Cards[k] = _drawPile.Cards[n];
+            _drawPile.Cards[n] = value;
+        }
     }
 
     private void RefillDrawPile()
