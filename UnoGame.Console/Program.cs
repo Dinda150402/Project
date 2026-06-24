@@ -98,8 +98,7 @@ class Program
             Console.WriteLine("\nPilih tindakan:");
             Console.WriteLine("1. Mainkan Kartu (Play)");
             Console.WriteLine("2. Ambil Kartu (Draw)");
-            Console.WriteLine("3. Lewati Giliran (Pass)");
-            Console.Write("Masukkan nomor aksi (1-3): ");
+            Console.Write("Masukkan nomor aksi (1 atau 2): ");
             string choice = Console.ReadLine();
 
             try
@@ -136,11 +135,40 @@ class Program
                 }
                 else if (choice == "2")
                 {
-                    game.DrawCard(currentPlayer);
-                }
-                else if (choice == "3")
-                {
-                    game.PassTurn(currentPlayer);
+                    var validCards = game.GetValidCards(currentPlayer);
+                    if(validCards.Count > 0)
+                    {
+                        Console.WriteLine("⚠️ Anda masih memiliki kartu yang valid untuk dimainkan. Anda tidak dapat mengambil kartu.");
+                    }
+                    else
+                    {
+                        game.DrawCard(currentPlayer);
+                        var validCardsAfterDraw = game.GetValidCards(currentPlayer);
+                        if(validCardsAfterDraw.Count > 0)
+                        {
+                            ICard cardToPlay = validCardsAfterDraw.First();
+                            CardColor? chosenColor = null;
+                            if (cardToPlay.Value == CardValue.Wild || cardToPlay.Value == CardValue.WildDrawFour)
+                            {
+                                Console.WriteLine("Pilih warna baru (Red, Blue, Green, Yellow):");
+                                string colorInput = Console.ReadLine();
+                                if (Enum.TryParse(colorInput, true, out CardColor parsedColor))
+                                {
+                                    chosenColor = parsedColor;
+                                }
+                                else
+                                {
+                                    chosenColor = CardColor.Red; // Default fallback aman
+                                }
+                            }
+                            
+                            game.PlayCard(currentPlayer, cardToPlay, chosenColor);
+                        } else
+                        {
+                            Console.WriteLine("⚠️ Anda tidak memiliki kartu yang valid untuk dimainkan. Giliran Anda akan dilewati.");
+                            game.PassTurn(currentPlayer);   
+                        }  
+                    }
                 }
                 else
                 {

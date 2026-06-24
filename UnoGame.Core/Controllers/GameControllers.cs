@@ -239,11 +239,20 @@ public class GameController
         switch (card.Value)
         {
             case CardValue.Skip: 
-                _currentPlayerIndex = nextPlayerIndex;
+                //Skip Player selanjutnya
+                //NextTurn() akan memanggil player selanjutnya
+                _currentPlayerIndex = (_currentPlayerIndex % _players.Count + 1) % _players.Count;
                 break;
             case CardValue.Reverse:
-                _direction = (_direction == GameDirection.ClockWise)? 
+                if(_players.Count == 2)
+                {
+                    goto case CardValue.Skip;
+                } else 
+                {_direction = (_direction == GameDirection.ClockWise)? 
                 GameDirection.CounterClockWise : GameDirection.ClockWise ;
+                
+                _currentPlayerIndex = _players.Count -1;
+                }
                 break;
             case CardValue.DrawTwo:
                 for(int i = 0; i < 2; i++)
