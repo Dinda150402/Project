@@ -63,10 +63,12 @@ public class GameController
             _drawPile.Cards.RemoveAt(_drawPile.Cards.Count -1);
             _discardPile = new DiscardPile(starterCard);
             _currentColor = starterCard.Color ?? CardColor.Red;
+            
+            ApplyCardEffect(starterCard);
 
             IPlayer firstPlayer = _players[_currentPlayerIndex];
             OnTurnStarted?.Invoke(firstPlayer);
-
+            
         } else {
             throw new InvalidOperationException("Jumlah Player Minimal 2 orang");}
     }
@@ -87,6 +89,12 @@ public class GameController
         OnCardPlayed?.Invoke(player, card);
 
         ApplyCardEffect(card);
+
+        if(_hands[player].Count == 0)
+        {
+            EndGame(player);
+            Environment.Exit(0);
+        }
 
         NextTurn();
     }
@@ -297,7 +305,7 @@ public class GameController
 
     private void EndGame(IPlayer winner)
     {
-        throw new NotImplementedException();
+        OnGameEnded?.Invoke(winner);
     }
 }
 

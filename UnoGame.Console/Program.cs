@@ -17,7 +17,7 @@ class Program
 
         // Menampilkan fitur opsional input nama pemain dinamis
         List<IPlayer> players = new List<IPlayer>();
-        Console.Write("Gunakan pemain default (Alice, Bob, Charlie)? (y/n): ");
+        Console.Write("Gunakan pemain default (Alice, Bob, Charlie, Jack)? (y/n): ");
         string useDefault = Console.ReadLine()?.Trim().ToLower();
 
         if (useDefault == "n")
@@ -58,6 +58,8 @@ class Program
 
         // 4. SUBSCRIBE EVENT SEBELUM STARTGAME()
         game.OnTurnStarted += (player) => {
+            ShowIntermissionScreen(player);
+            
             currentPlayer = player;
             Console.WriteLine($"\n🔔 GILIRAN BARU: Sekarang giliran [{player.Name}]");
         };
@@ -196,4 +198,30 @@ class Program
         string colorName = card.Color.HasValue ? card.Color.Value.ToString() : "Wild";
         return $"[{colorName} - {card.Value}]";
     }
+
+    private static void ShowIntermissionScreen(IPlayer nextPlayer)
+    {
+        // 1. Bersihkan seluruh layar dari kartu pemain sebelumnya
+        Console.Clear();
+
+        // 2. Tampilkan pesan penutup/pembatas yang besar
+        Console.WriteLine("=================================================");
+        Console.WriteLine("               PERGANTIAN GILIRAN                ");
+        Console.WriteLine("=================================================");
+        Console.WriteLine("\n\n");
+        Console.WriteLine($"      HARAP SERAHKAN KOMPUTER KEPADA: [{nextPlayer.Name}]");
+        Console.WriteLine("\n\n");
+        Console.WriteLine("=================================================");
+        Console.WriteLine("Pemain sebelumnya dilarang mengintip layar!");
+        Console.Write("Tekan [ENTER] jika Anda sudah siap untuk melihat kartu...");
+    
+    // 3. Kunci program di sini sampai pemain berikutnya menekan tombol Enter
+        Console.ReadLine(); 
+    
+    // 4. Bersihkan layar lagi sebelum kartu asli digambar
+        Console.Clear();
+    }
+
+
+    
 }
