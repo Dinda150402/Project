@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
 using UnoGame.Core.Models;
@@ -93,13 +94,13 @@ public class GameController
         if(_hands[player].Count == 0)
         {
             EndGame(player);
-            Environment.Exit(0);
+            return;
         }
 
         NextTurn();
     }
 
-    public void DrawCard(IPlayer player)
+    public ICard DrawCard(IPlayer player)
     {
         if(_players[_currentPlayerIndex] != player) throw new InvalidOperationException ("It's not your turn yet");
 
@@ -114,7 +115,7 @@ public class GameController
         _hands[player].Add(drawnCard);
         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count-1);
 
-        _drawnCardThisTurn = drawnCard;
+        return _drawnCardThisTurn = drawnCard;
     }
 
     public void CallUno(IPlayer player)
@@ -241,20 +242,20 @@ public class GameController
             case CardValue.Skip: 
                 //Skip Player selanjutnya
                 //NextTurn() akan memanggil player selanjutnya
-                _currentPlayerIndex = (_currentPlayerIndex % _players.Count + 1) % _players.Count;
+                _currentPlayerIndex = nextPlayerIndex;
                 break;
             case CardValue.Reverse:
                 if(_players.Count == 2)
                 {
                     goto case CardValue.Skip;
                 } else 
-                {_direction = (_direction == GameDirection.ClockWise)? 
-                GameDirection.CounterClockWise : GameDirection.ClockWise ;
-                
-                _currentPlayerIndex = _players.Count -1;
+                {
+                _currentPlayerIndex = (_direction == GameDirection.ClockWise)? 
+                (_currentPlayerIndex - 1 + _players.Count) % _players.Count : (_currentPlayerIndex + 1) % _players.Count;
                 }
                 break;
             case CardValue.DrawTwo:
+                _currentPlayerIndex = nextPlayerIndex;
                 for(int i = 0; i < 2; i++)
                 {
                     if(_drawPile.Cards.Count > 0)
@@ -264,12 +265,11 @@ public class GameController
                         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
                     }
                 }
-                _currentPlayerIndex = nextPlayerIndex;
-                break;
+                goto case CardValue.Skip;
             case CardValue.Wild:
-
                 break;
             case CardValue.WildDrawFour:
+                _currentPlayerIndex = nextPlayerIndex;
                 for(int i = 0; i < 4; i++)
                 {
                     if(_drawPile.Cards.Count > 0)
@@ -279,7 +279,7 @@ public class GameController
                         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
                     }
                 }
-                _currentPlayerIndex = nextPlayerIndex;
+                goto case CardValue.Skip;
                 break;
             default: 
                 break;

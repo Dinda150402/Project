@@ -142,11 +142,15 @@ class Program
                     }
                     else
                     {
-                        game.DrawCard(currentPlayer);
+                        //game.DrawCard(currentPlayer);
+                        ICard drawnCard = game.DrawCard(currentPlayer);
                         var validCardsAfterDraw = game.GetValidCards(currentPlayer);
+
                         if(validCardsAfterDraw.Count > 0)
                         {
-                            ICard cardToPlay = validCardsAfterDraw.First();
+                            ICard cardToPlay = drawnCard;
+
+                            //Tangani penentuan warna jika yang keluar kartu wild
                             CardColor? chosenColor = null;
                             if (cardToPlay.Value == CardValue.Wild || cardToPlay.Value == CardValue.WildDrawFour)
                             {
@@ -159,15 +163,16 @@ class Program
                                 else
                                 {
                                     chosenColor = CardColor.Red; // Default fallback aman
-                                }
+                                }   
                             }
-                            
-                            game.PlayCard(currentPlayer, cardToPlay, chosenColor);
-                        } else
+
+                        game.PlayCard(currentPlayer, cardToPlay, chosenColor);
+
+                        }
+                        else
                         {
-                            Console.WriteLine("⚠️ Anda tidak memiliki kartu yang valid untuk dimainkan. Giliran Anda akan dilewati.");
-                            game.PassTurn(currentPlayer);   
-                        }  
+                            game.PassTurn(currentPlayer);
+                        }
                     }
                 }
                 else
