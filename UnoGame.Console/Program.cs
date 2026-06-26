@@ -18,7 +18,7 @@ class Program
         // Menampilkan fitur opsional input nama pemain dinamis
         List<IPlayer> players = new List<IPlayer>();
         Console.Write("Gunakan pemain default (Alice, Bob, Charlie, Jack)? (y/n): ");
-        string useDefault = Console.ReadLine()?.Trim().ToLower();
+        string useDefault = Console.ReadLine()?.Trim().ToLower() ?? "";
 
         if (useDefault == "n")
         {
@@ -32,7 +32,7 @@ class Program
             for (int i = 1; i <= playerCount; i++)
             {
                 Console.Write($"Masukkan nama pemain {i}: ");
-                string name = Console.ReadLine()?.Trim();
+                string name = Console.ReadLine()?.Trim() ?? "";
                 players.Add(new Player(string.IsNullOrEmpty(name) ? $"Player {i}" : name));
             }
         }
@@ -41,6 +41,7 @@ class Program
             players.Add(new Player("Alice"));
             players.Add(new Player("Bob"));
             players.Add(new Player("Charlie"));
+            players.Add(new Player("Jack"));
         }
 
         // 1. Generate list kartu standar dengan poin lengkap (Fix Error 2)
@@ -86,6 +87,47 @@ class Program
             Console.WriteLine($"Warna Aktif Saat Ini: {game.GetCurrentColor()}"); // Menggunakan method getter (Fix Error 3)
             Console.WriteLine("---------------------------------------");
 
+            //Catch Uno Violation
+            var unoPending = game.GetUnoPendingPlayers().Where(p => p != currentPlayer).ToList();
+
+            if(unoPending.Count > 0)
+                {
+                    Console.WriteLine("Daftar Pemain yang Bisa Ditangkap: ");
+                    for(int i = 0; i < unoPending.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1} . {unoPending[i].Name}");
+                    }
+
+                    Console.WriteLine("0. Lewati, jangan tangkap siapa-siapa");
+                        
+                    int pilihanIndex = -1;
+                    bool inputValid = false;
+
+                    while (!inputValid)
+                    {
+                        Console.Write($"Masukkan Index Pemain (1. {unoPending.Count})");
+                        string userInput = (Console.ReadLine() ?? "").Trim();
+
+                        if (int.TryParse(userInput, out pilihanIndex) && pilihanIndex >= 0 && pilihanIndex <= unoPending.Count)
+                        {       
+                            if (pilihanIndex == 0)
+                            {
+                                Console.WriteLine("Lewati...");
+                                break;
+                            }
+                            inputValid = true;
+                            IPlayer pemainTerpilih = unoPending[pilihanIndex -1];
+                            Console.WriteLine($"\nSukses! Anda memilih untuk menangkap: {pemainTerpilih.Name}");
+                            game.CatchUnoViolation(pemainTerpilih);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Input tidak valid! Silakan masukkan nomor yang tertera pada daftar.");
+                        }
+                    }
+                        
+                }
+
             // Tampilkan kartu di tangan pemain aktif
             List<ICard> hand = game.GetPlayerHand(currentPlayer);
             Console.WriteLine("Kartu di tangan Anda:");
@@ -98,13 +140,14 @@ class Program
             Console.WriteLine("\nPilih tindakan:");
             Console.WriteLine("1. Mainkan Kartu (Play)");
             Console.WriteLine("2. Ambil Kartu (Draw)");
-            Console.Write("Masukkan nomor aksi (1 atau 2): ");
-            string choice = Console.ReadLine();
+            Console.Write("Masukkan nomor aksi (1, 2): ");
+            string choice = Console.ReadLine() ?? "";
 
             try
             {
                 if (choice == "1")
                 {
+                    
                     Console.Write("Masukkan nomor indeks kartu yang ingin dimainkan: ");
                     if (int.TryParse(Console.ReadLine(), out int cardIndex) && cardIndex >= 0 && cardIndex < hand.Count)
                     {
@@ -115,7 +158,7 @@ class Program
                         if (cardToPlay.Value == CardValue.Wild || cardToPlay.Value == CardValue.WildDrawFour)
                         {
                             Console.WriteLine("Pilih warna baru (Red, Blue, Green, Yellow):");
-                            string colorInput = Console.ReadLine();
+                            string colorInput = Console.ReadLine() ?? "";
                             if (Enum.TryParse(colorInput, true, out CardColor parsedColor))
                             {
                                 chosenColor = parsedColor;
@@ -126,7 +169,18 @@ class Program
                             }
                         }
 
-                        game.PlayCard(currentPlayer, cardToPlay, chosenColor);
+                        IPlayer playerYangMain = currentPlayer;
+                        game.PlayCard(playerYangMain, cardToPlay, chosenColor);
+
+                        if (game.GetUnoPendingPlayers().Contains(playerYangMain))
+                        {
+                        Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
+                        string unoInput = Console.ReadLine() ?? "";
+                        if (unoInput.Trim().ToUpper() == "UNO")
+                            game.CallUno(playerYangMain);
+                        else
+                            Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
+                        }
                     }
                     else
                     {
@@ -146,7 +200,7 @@ class Program
                         ICard drawnCard = game.DrawCard(currentPlayer);
                         var validCardsAfterDraw = game.GetValidCards(currentPlayer);
 
-                        if(validCardsAfterDraw.Count > 0)
+                        if(validCardsAfterDraw.Contains(drawnCard))
                         {
                             ICard cardToPlay = drawnCard;
 
@@ -155,7 +209,7 @@ class Program
                             if (cardToPlay.Value == CardValue.Wild || cardToPlay.Value == CardValue.WildDrawFour)
                             {
                                 Console.WriteLine("Pilih warna baru (Red, Blue, Green, Yellow):");
-                                string colorInput = Console.ReadLine();
+                                string colorInput = Console.ReadLine() ?? "";
                                 if (Enum.TryParse(colorInput, true, out CardColor parsedColor))
                                 {
                                     chosenColor = parsedColor;
@@ -166,15 +220,28 @@ class Program
                                 }   
                             }
 
-                        game.PlayCard(currentPlayer, cardToPlay, chosenColor);
+                        IPlayer playerYangMain = currentPlayer;
+                        //game.PlayCard(currentPlayer, cardToPlay, chosenColor);
 
+                        if (game.GetUnoPendingPlayers().Contains(playerYangMain))
+                            {
+                                Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
+                                string unoInput = Console.ReadLine() ?? "";
+                                if(unoInput.Trim().ToUpper() == "UNO")
+                                {
+                                    game.CallUno(playerYangMain);}
+                                else Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
+                            }
+                        game.PlayCard(currentPlayer, cardToPlay, chosenColor);
                         }
+
                         else
                         {
                             game.PassTurn(currentPlayer);
                         }
                     }
                 }
+                
                 else
                 {
                     Console.WriteLine("❌ Pilihan menu tidak valid!");
@@ -254,7 +321,6 @@ class Program
     // 4. Bersihkan layar lagi sebelum kartu asli digambar
         Console.Clear();
     }
-
 
     
 }

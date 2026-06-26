@@ -204,6 +204,11 @@ public class GameController
         throw new ArgumentException("Player not found in the game.");
     }
 
+    public List<IPlayer> GetUnoPendingPlayers()
+    {
+        return _unoPendingPlayers.ToList();
+    }
+
     public List<ICard> GetValidCards(IPlayer player)
     {
         List<ICard> validCard = new List<ICard>();
@@ -292,6 +297,8 @@ public class GameController
                 {
                     goto case CardValue.Skip;
                 }
+                _direction = (_direction == GameDirection.ClockWise) ? 
+                GameDirection.CounterClockWise : GameDirection.ClockWise;
                 break;
             case CardValue.DrawTwo:
                 _currentPlayerIndex = nextPlayerIndex;
@@ -304,6 +311,7 @@ public class GameController
                         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
                     }
                 }
+                _currentPlayerIndex = nextPlayerIndex;
                 goto case CardValue.Skip;
             case CardValue.Wild:
                 break;
