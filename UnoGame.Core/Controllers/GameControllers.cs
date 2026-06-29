@@ -49,7 +49,14 @@ public class GameController
             Shuffle();
             foreach (IPlayer player in _players)
             {
-                _hands[player] = new List<ICard>();
+                if(!_hands.ContainsKey(player))
+                {
+                    _hands[player] = new List<ICard>();
+                } else 
+                {
+                    _hands[player].Clear();
+                }
+                
                 for (int i = 1; i <= 7; i++)
                 {
                     if (_drawPile.Cards.Count > 0)
@@ -106,18 +113,31 @@ public class GameController
                 ? (chosenColor ?? _currentColor)
                 : (card.Color ?? _currentColor);
 
-        OnCardPlayed?.Invoke(player, card);
-
-        ApplyCardEffect(card);
-
         if (_hands[player].Count == 1)
         {
             _unoPendingPlayers.Add(player);
         }
 
+        OnCardPlayed?.Invoke(player, card);
+
+        ApplyCardEffect(card);
+
         if (_hands[player].Count == 0)
         {
-            EndGame(player);
+            int roundScore = CalculateRoundScore(player);
+            
+            player.Score += roundScore;
+            
+            OnRoundEnded?.Invoke(player, roundScore);
+
+            if(player.Score >= 500)
+            {
+                EndGame(player);
+            }
+            else
+            {
+                StartNextRound();
+            }
             return;
         }
 
@@ -362,12 +382,40 @@ public class GameController
 
     private int CalculateRoundScore(IPlayer winner)
     {
-        throw new NotImplementedException();
+        int score = 0;
+
+        foreach (IPlayer player in _players)
+        {
+            if (player == winner)
+            {
+                continue;
+            }
+            
+            foreach (ICard card in _hands[player])
+            {
+                score += card.Points;
+            }
+        }
+        return score;
     }
 
     private void StartNextRound()
     {
-        throw new NotImplementedException();
+        foreach (IPlayer player in _players)
+        {
+            _drawPile.Cards.AddRange(_hands[player]);
+            _hands[player].Clear();
+        }
+        _drawPile.Cards.AddRange(_discardPile!.Cards);
+        _discardPile!.Cards.Clear();
+
+        _currentColor = null;
+        _direction = GameDirection.ClockWise;
+        _currentPlayerIndex = 0;
+        _drawnCardThisTurn = null;
+        _unoPendingPlayers.Clear();
+
+        StartGame();
     }
 
     private void EndGame(IPlayer winner)
