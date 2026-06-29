@@ -67,18 +67,21 @@ class Program
 
         game.OnCardPlayed += (player, card) => {
             Console.WriteLine($"🃏 {player.Name} memainkan kartu: {GetCardName(card)}");
+
+            if (game.GetUnoPendingPlayers().Contains(player))
+                        {
+                        Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
+                        string unoInput = Console.ReadLine() ?? "";
+                        if (unoInput.Trim().ToUpper() == "UNO")
+                            game.CallUno(player);
+                        else
+                            Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
+                        }
         };
 
         game.OnGameEnded += (winner) => {
             Console.WriteLine($"\n🏆 GAME OVER! Pemenangnya adalah {winner.Name}!");
             isGameRunning = false;
-        };
-
-        game.OnRoundEnded += (player, score) => {
-            Console.WriteLine($"\n🎉 Ronde selesai! {player.Name} menang ronde ini dengan {score} poin!");
-            Console.WriteLine($"Skor total {player.Name}: {player.Score}");
-            Console.WriteLine("Memulai ronde baru...");
-            Console.ReadLine();
         };
 
         game.OnRoundEnded += (player, score) => {
@@ -317,6 +320,9 @@ class Program
 
     private static void ShowIntermissionScreen(IPlayer nextPlayer)
     {
+        Console.WriteLine("Tekan ENTER: ");
+        Console.ReadKey();
+        
         // 1. Bersihkan seluruh layar dari kartu pemain sebelumnya
         Console.Clear();
 

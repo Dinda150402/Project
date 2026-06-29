@@ -331,7 +331,6 @@ public class GameController
                         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
                     }
                 }
-                _currentPlayerIndex = nextPlayerIndex;
                 goto case CardValue.Skip;
             case CardValue.Wild:
                 break;
