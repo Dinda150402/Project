@@ -46,7 +46,10 @@ class Program
 
         if(!useDefault)
         {
-            
+            for(int i = 0; i <= player.Count; i++)
+            {
+                
+            }
         }
         */
         else
