@@ -170,8 +170,6 @@ class Program
                         }
 
                         IPlayer playerYangMain = currentPlayer;
-                        game.PlayCard(playerYangMain, cardToPlay, chosenColor);
-
                         if (game.GetUnoPendingPlayers().Contains(playerYangMain))
                         {
                         Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
@@ -181,6 +179,8 @@ class Program
                         else
                             Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
                         }
+                        game.PlayCard(playerYangMain, cardToPlay, chosenColor);
+
                     }
                     else
                     {
@@ -221,7 +221,7 @@ class Program
                             }
 
                         IPlayer playerYangMain = currentPlayer;
-                        //game.PlayCard(currentPlayer, cardToPlay, chosenColor);
+                        
 
                         if (game.GetUnoPendingPlayers().Contains(playerYangMain))
                             {
@@ -234,6 +234,7 @@ class Program
                             }
                         game.PlayCard(currentPlayer, cardToPlay, chosenColor);
                         }
+                        
 
                         else
                         {
