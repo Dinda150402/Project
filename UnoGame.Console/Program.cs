@@ -160,6 +160,7 @@ class Program
 
             string actionChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
+                    .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                     .Title("Pilih tindakan:")
                     .AddChoices("🃏 Mainkan Kartu", "🂠 Ambil Kartu")
             );
@@ -181,6 +182,7 @@ class Program
                     {
                         chosenColor = AnsiConsole.Prompt(
                             new SelectionPrompt<CardColor>()
+                                .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                                 .Title("Pilih warna baru:")
                                 .AddChoices(CardColor.Red, CardColor.Blue, CardColor.Green, CardColor.Yellow)
                                 .UseConverter(c => $"[{ColorName(c)}]{c}[/]")
