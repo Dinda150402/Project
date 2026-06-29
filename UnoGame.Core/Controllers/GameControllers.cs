@@ -134,10 +134,6 @@ public class GameController
             {
                 EndGame(player);
             }
-            else
-            {
-                StartNextRound();
-            }
             return;
         }
 
@@ -398,7 +394,7 @@ public class GameController
         return score;
     }
 
-    public void StartNextRound()
+    public void StartNextRound(IPlayer startingPlayer)
     {
         foreach (IPlayer player in _players)
         {
@@ -410,7 +406,7 @@ public class GameController
 
         _currentColor = null;
         _direction = GameDirection.ClockWise;
-        _currentPlayerIndex = 0;
+        _currentPlayerIndex = _players.IndexOf(startingPlayer);;
         _drawnCardThisTurn = null;
         _unoPendingPlayers.Clear();
 
