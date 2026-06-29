@@ -398,7 +398,7 @@ public class GameController
         return score;
     }
 
-    private void StartNextRound()
+    public void StartNextRound()
     {
         foreach (IPlayer player in _players)
         {

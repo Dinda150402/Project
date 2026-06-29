@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
 using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
 using UnoGame.Core.Models;
@@ -36,6 +37,18 @@ class Program
                 players.Add(new Player(string.IsNullOrEmpty(name) ? $"Player {i}" : name));
             }
         }
+        /*AnsiConsole.Clear();
+        AnsiConsole.Write(new FigletText("UNO CLI").Centered().Color(Color.Red));
+        AnsiConsole.MarkupLine ("[grey]Board edition - powered by Spectre.Console[/]\n");
+
+        List<IPlayer> players = new List<IPLayer>();
+        bool useDefault = AnsiConsole.Confirm("Gunakan pemain default (Alice, Bob, Charlie, Jack)?")
+
+        if(!useDefault)
+        {
+            
+        }
+        */
         else
         {
             players.Add(new Player("Alice"));
@@ -55,7 +68,7 @@ class Program
 
         // State pengendali loop lokal
         bool isGameRunning = true;
-        IPlayer currentPlayer = null;
+        IPlayer? currentPlayer = null;
 
         // 4. SUBSCRIBE EVENT SEBELUM STARTGAME()
         game.OnTurnStarted += (player) => {
@@ -187,15 +200,7 @@ class Program
                         }
 
                         IPlayer playerYangMain = currentPlayer;
-                        if (game.GetUnoPendingPlayers().Contains(playerYangMain))
-                        {
-                        Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
-                        string unoInput = Console.ReadLine() ?? "";
-                        if (unoInput.Trim().ToUpper() == "UNO")
-                            game.CallUno(playerYangMain);
-                        else
-                            Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
-                        }
+
                         game.PlayCard(playerYangMain, cardToPlay, chosenColor);
 
                     }
@@ -234,22 +239,12 @@ class Program
                                 }
                                 else
                                 {
-                                    chosenColor = CardColor.Red; // Default fallback aman
+                                    chosenColor = CardColor.Red;
                                 }   
                             }
 
                         IPlayer playerYangMain = currentPlayer;
                         
-
-                        if (game.GetUnoPendingPlayers().Contains(playerYangMain))
-                            {
-                                Console.Write("⚠️ Kamu punya 1 kartu! Ketik UNO dan tekan Enter: ");
-                                string unoInput = Console.ReadLine() ?? "";
-                                if(unoInput.Trim().ToUpper() == "UNO")
-                                {
-                                    game.CallUno(playerYangMain);}
-                                else Console.WriteLine("❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu.");
-                            }
                         game.PlayCard(currentPlayer, cardToPlay, chosenColor);
                         }
                         
