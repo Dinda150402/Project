@@ -74,6 +74,20 @@ class Program
             isGameRunning = false;
         };
 
+        game.OnRoundEnded += (player, score) => {
+            Console.WriteLine($"\n🎉 Ronde selesai! {player.Name} menang ronde ini dengan {score} poin!");
+            Console.WriteLine($"Skor total {player.Name}: {player.Score}");
+            Console.WriteLine("Memulai ronde baru...");
+            Console.ReadLine();
+        };
+
+        game.OnRoundEnded += (player, score) => {
+            Console.WriteLine($"\n🎉 Ronde selesai! {player.Name} menang ronde ini dengan {score} poin!");
+            Console.WriteLine($"Skor total {player.Name}: {player.Score}");
+            Console.WriteLine("Memulai ronde baru...");
+            Console.ReadLine();
+        };
+
         // 5. MEMULAI GAME
         game.StartGame();
 
@@ -196,8 +210,9 @@ class Program
                     }
                     else
                     {
-                        //game.DrawCard(currentPlayer);
                         ICard drawnCard = game.DrawCard(currentPlayer);
+                        Console.WriteLine($"🃏 Anda menarik kartu: {GetCardName(drawnCard)}");
+
                         var validCardsAfterDraw = game.GetValidCards(currentPlayer);
 
                         if(validCardsAfterDraw.Contains(drawnCard))
