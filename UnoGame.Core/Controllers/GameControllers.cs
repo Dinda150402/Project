@@ -81,6 +81,17 @@ public class GameController
                 _currentColor = newStarterCard.Color ?? CardColor.Red;
                 ApplyCardEffect(newStarterCard);
             }
+            else if(starterCard.Value == CardValue.DrawTwo)
+            {
+                IPlayer firstTurn = _players[_currentPlayerIndex];
+                for(int i = 0; i < 2; i++)
+                {
+                    ICard drawnCard = _drawPile.Cards[_drawPile.Cards.Count -1];
+                    _hands[firstTurn].Add(drawnCard);
+                    _drawPile.Cards.RemoveAt(_drawPile.Cards.Count -1);
+                }
+                _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+            }
             else
             {
                 ApplyCardEffect(starterCard);
@@ -157,6 +168,10 @@ public class GameController
         _hands[player].Add(drawnCard);
         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
 
+        if (_unoPendingPlayers.Contains(player))
+        {
+            _unoPendingPlayers.Remove(player);
+        }
         return _drawnCardThisTurn = drawnCard;
     }
 
@@ -172,6 +187,10 @@ public class GameController
     {
         if (_unoPendingPlayers.Contains(player))
         {
+            if(_hands[player].Count != 1)
+            {
+                _unoPendingPlayers.Remove(player);
+            }
             ApplyUnoPenalty(player);
             _unoPendingPlayers.Remove(player);
             return true;
