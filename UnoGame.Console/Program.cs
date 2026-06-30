@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
-using Spectre.Console.Rendering;
 using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
 using UnoGame.Core.Models;
 using UnoGame.Core.Controllers;
+
+
 
 class Program
 {
@@ -67,12 +68,12 @@ class Program
         // jadi prompt-nya pasti nempel ke pemain yang baru aja main, bukan pemain berikutnya.
         game.OnCardPlayed += (player, card) =>
         {
-            AnsiConsole.MarkupLine($"🃏 [bold]{Esc(player.Name)}[/] memainkan kartu: {CardMarkup(card)}");
+            AnsiConsole.MarkupLine($"🃏 [bold]{GameRenderer.Esc(player.Name)}[/] memainkan kartu: {GameRenderer.CardMarkup(card)}");
 
             if (game.GetUnoPendingPlayers().Contains(player))
             {
                 bool calledUno = AnsiConsole.Confirm(
-                    $"[yellow]{Esc(player.Name)}, kartu kamu tersisa 1! Teriak UNO sekarang?[/]");
+                    $"[yellow]{GameRenderer.Esc(player.Name)}, kartu kamu tersisa 1! Teriak UNO sekarang?[/]");
                 if (calledUno)
                 {
                     game.CallUno(player);
@@ -87,8 +88,8 @@ class Program
 
         game.OnRoundEnded += (player, score) =>
         {
-            AnsiConsole.MarkupLine($"\n[green]🎉 Ronde selesai! {Esc(player.Name)} menang ronde ini (+{score} poin).[/]");
-            AnsiConsole.MarkupLine($"[bold]Skor total {Esc(player.Name)}: {player.Score}[/]\n");
+            AnsiConsole.MarkupLine($"\n[green]🎉 Ronde selesai! {GameRenderer.Esc(player.Name)} menang ronde ini (+{score} poin).[/]");
+            AnsiConsole.MarkupLine($"[bold]Skor total {GameRenderer.Esc(player.Name)}: {player.Score}[/]\n");
             PrintScoreboard(game);
 
             if (player.Score >= 500)
@@ -111,7 +112,7 @@ class Program
         {
             var leader = game.GetPlayers().OrderByDescending(p => p.Score).First();
             AnsiConsole.Write(new FigletText("STOP").Centered().Color(Color.Red));
-            AnsiConsole.MarkupLine($"\n[bold yellow]🏆 Skor tertinggi saat dihentikan: {Esc(leader.Name)} dengan {leader.Score} poin![/]");
+            AnsiConsole.MarkupLine($"\n[bold yellow]🏆 Skor tertinggi saat dihentikan: {GameRenderer.Esc(leader.Name)} dengan {leader.Score} poin![/]");
             isGameRunning = false;
         }
     };
@@ -120,7 +121,7 @@ class Program
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new FigletText("GAME OVER").Centered().Color(Color.Gold1));
-            AnsiConsole.MarkupLine($"\n[bold yellow]🏆 Pemenang akhir: {Esc(winner.Name)} dengan {winner.Score} poin![/]");
+            AnsiConsole.MarkupLine($"\n[bold yellow]🏆 Pemenang akhir: {GameRenderer.Esc(winner.Name)} dengan {winner.Score} poin![/]");
             isGameRunning = false;
         };
 
@@ -132,7 +133,7 @@ class Program
         {
             if (currentPlayer == null) continue;
 
-            RenderBoard(game, currentPlayer);
+            GameRenderer.RenderBoard(game, currentPlayer);
 
             // Catch Uno Violation
             var unoPending = game.GetUnoPendingPlayers().Where(p => p != currentPlayer).ToList();
@@ -150,13 +151,13 @@ class Program
                 if (pick != skipLabel)
                 {
                     IPlayer target = unoPending.First(p => p.Name == pick);
-                    AnsiConsole.MarkupLine($"[green]Sukses! Anda menangkap {Esc(target.Name)}.[/]");
+                    AnsiConsole.MarkupLine($"[green]Sukses! Anda menangkap {GameRenderer.Esc(target.Name)}.[/]");
                     game.CatchUnoViolation(target);
                 }
             }
 
             List<ICard> hand = game.GetPlayerHand(currentPlayer);
-            RenderHand(hand);
+            GameRenderer.RenderHand(hand);
 
             string actionChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
@@ -174,7 +175,7 @@ class Program
                             .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                             .Title("Pilih kartu yang ingin dimainkan:")
                             .AddChoices(hand)
-                            .UseConverter(c => $"{CardLabel(c)}  [{ColorName(c.Color)}]({ColorName(c.Color)})[/]")
+                            .UseConverter(c => $"{GameRenderer.CardLabel(c)}  [{GameRenderer.ColorName(c.Color)}]({GameRenderer.ColorName(c.Color)})[/]")
                     );
 
                     CardColor? chosenColor = null;
@@ -185,7 +186,7 @@ class Program
                                 .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                                 .Title("Pilih warna baru:")
                                 .AddChoices(CardColor.Red, CardColor.Blue, CardColor.Green, CardColor.Yellow)
-                                .UseConverter(c => $"[{ColorName(c)}]{c}[/]")
+                                .UseConverter(c => $"[{GameRenderer.ColorName(c)}]{c}[/]")
                         );
                     }
 
@@ -203,7 +204,7 @@ class Program
                     else
                     {
                         ICard drawnCard = game.DrawCard(currentPlayer);
-                        AnsiConsole.MarkupLine($"\n🎴 Anda mengambil kartu: {CardMarkup(drawnCard)}");
+                        AnsiConsole.MarkupLine($"\n🎴 Anda mengambil kartu: {GameRenderer.CardMarkup(drawnCard)}");
 
                         var validCardsAfterDraw = game.GetValidCards(currentPlayer);
 
@@ -219,7 +220,7 @@ class Program
                                         .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                                         .Title("Pilih warna baru:")
                                         .AddChoices(CardColor.Red, CardColor.Blue, CardColor.Green, CardColor.Yellow)
-                                        .UseConverter(c => $"[{ColorName(c)}]{c}[/]")
+                                        .UseConverter(c => $"[{GameRenderer.ColorName(c)}]{c}[/]")
                                 );
                             }
 
@@ -243,135 +244,6 @@ class Program
             }
         }
     }
-
-    // ============== RENDERING HELPERS (Spectre.Console) ==============
-
-    private static void RenderBoard(GameController game, IPlayer currentPlayer)
-    {
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new FigletText("UNO").Centered().Color(Color.Gold1));
-
-        ICard topCard = game.GetTopDiscardCard();
-        CardColor activeColor = game.GetCurrentColor();
-        string activeColorName = ColorName(activeColor);
-
-        var arena = new Panel(CardPanel(topCard, "Kartu Teratas"))
-            .Border(BoxBorder.Double)
-            .BorderColor(GetSpectreColor(activeColor))
-            .Header($" Warna Aktif: [bold {activeColorName}]{activeColor}[/] ")
-            .Padding(1, 0, 1, 0);
-
-        arena.Width = 28;  
-
-        var arenaWrapper = new Table()
-            .NoBorder()
-            .HideHeaders()
-            .Collapse();                             
-        arenaWrapper.AddColumn(new TableColumn(string.Empty));
-        arenaWrapper.AddRow(arena);
-        AnsiConsole.Write(Align.Center(arenaWrapper));
-        AnsiConsole.WriteLine();
-
-        var table = new Table().Border(TableBorder.Rounded).Title("[bold]Status Pemain[/]");
-        table.AddColumn("Pemain");
-        table.AddColumn("Sisa Kartu");
-        table.AddColumn("Skor");
-        table.AddColumn("Status");
-
-        var pending = game.GetUnoPendingPlayers();
-        foreach (var p in game.GetPlayers())
-        {
-            string status = (p == currentPlayer) ? "[green]▶ Giliran[/]" : "";
-            if (pending.Contains(p))
-                status += (status.Length > 0 ? " " : "") + "[red]⚠ Belum UNO[/]";
-
-            string nameCell = (p == currentPlayer) ? $"[bold]{Esc(p.Name)}[/]" : Esc(p.Name);
-
-            table.AddRow(nameCell, game.GetPlayerHand(p).Count.ToString(), p.Score.ToString(), status);
-        }
-
-        AnsiConsole.Write(table);
-        AnsiConsole.WriteLine();
-    }
-
-    private static void RenderHand(List<ICard> hand)
-    {
-        AnsiConsole.MarkupLine("[bold]Kartu di tangan Anda:[/]");
-        if (hand.Count == 0) return;
-
-        var table = new Table()
-            .NoBorder()
-            .HideHeaders()
-            .Collapse(); 
-
-        for (int i = 0; i < hand.Count; i++)
-            table.AddColumn(new TableColumn(string.Empty).NoWrap());
-
-        table.AddRow(hand.Select((c, i) => (IRenderable)CardPanel(c, $"#{i}")).ToArray());
-        AnsiConsole.Write(table);
-        AnsiConsole.WriteLine();
-    }
-
-    private static Panel CardPanel(ICard card, string footer)
-    {
-        string colorName = ColorName(card.Color);
-        var content = new Markup($"[bold {colorName}]{CardLabel(card)}[/]\n[grey]{footer}[/]");
-
-        var panel = new Panel(Align.Center(content)) 
-        .Border(BoxBorder.Rounded)
-        .BorderColor(GetSpectreColor(card.Color))
-        .Padding(2, 1, 2, 1);
-    
-        panel.Width = 14;  
-        return panel;
-        
-    }
-
-    private static Color GetSpectreColor(CardColor? color) => color switch
-    {
-        CardColor.Red => Color.Red,
-        CardColor.Blue => Color.Blue,
-        CardColor.Green => Color.Green,
-        CardColor.Yellow => Color.Yellow,
-        _ => Color.Grey
-    };
-
-    private static string CardMarkup(ICard card)
-    {
-        string color = ColorName(card.Color);
-        return $"[bold {color}]{CardLabel(card)}[/]";
-    }
-
-    private static string ColorName(CardColor? color) => color switch
-    {
-        CardColor.Red => "red",
-        CardColor.Blue => "blue",
-        CardColor.Green => "green",
-        CardColor.Yellow => "yellow",
-        _ => "grey"
-    };
-
-    private static string CardLabel(ICard card) => card.Value switch
-    {
-        CardValue.Zero => "0",
-        CardValue.One => "1",
-        CardValue.Two => "2",
-        CardValue.Three => "3",
-        CardValue.Four => "4",
-        CardValue.Five => "5",
-        CardValue.Six => "6",
-        CardValue.Seven => "7",
-        CardValue.Eight => "8",
-        CardValue.Nine => "9",
-        CardValue.Skip => "SKIP",
-        CardValue.Reverse => "REV",
-        CardValue.DrawTwo => "+2",
-        CardValue.Wild => "WILD",
-        CardValue.WildDrawFour => "+4",
-        _ => card.Value.ToString()
-    };
-
-    private static string Esc(string s) => Markup.Escape(s ?? "");
 
 
     private static List<ICard> GenerateUnoDeck()
@@ -414,7 +286,7 @@ class Program
         table.AddColumn("Skor");
         foreach (var p in game.GetPlayers().OrderByDescending(x => x.Score))
         {
-            table.AddRow(Esc(p.Name), p.Score.ToString());
+            table.AddRow(GameRenderer.Esc(p.Name), p.Score.ToString());
         }
         AnsiConsole.Write(table);
     }
@@ -430,7 +302,7 @@ class Program
             Align.Center(
                 new Markup(
                     $"[bold yellow]Harap serahkan komputer kepada:[/]\n\n" +
-                    $"[bold underline]{Esc(nextPlayer.Name)}[/]\n\n" +
+                    $"[bold underline]{GameRenderer.Esc(nextPlayer.Name)}[/]\n\n" +
                     $"[grey]Pemain sebelumnya dilarang mengintip layar![/]"
                 )
             )
@@ -446,6 +318,6 @@ class Program
         Console.ReadLine();
         AnsiConsole.Clear();
 
-        AnsiConsole.MarkupLine($"\n🔔 [bold]GILIRAN BARU:[/] Sekarang giliran [bold]{Esc(nextPlayer.Name)}[/]");
+        AnsiConsole.MarkupLine($"\n🔔 [bold]GILIRAN BARU:[/] Sekarang giliran [bold]{GameRenderer.Esc(nextPlayer.Name)}[/]");
     }
 }
