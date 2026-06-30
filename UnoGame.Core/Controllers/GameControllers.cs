@@ -365,7 +365,6 @@ public class GameController
                 break;
         }
     }
-
     private void NextTurn()
     {
         _drawnCardThisTurn = null;

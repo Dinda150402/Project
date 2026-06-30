@@ -7,8 +7,6 @@ using UnoGame.Core.Interfaces;
 using UnoGame.Core.Models;
 using UnoGame.Core.Controllers;
 
-
-
 class Program
 {
     static void Main(string[] args)
