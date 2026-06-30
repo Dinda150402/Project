@@ -190,10 +190,13 @@ public class GameController
             if(_hands[player].Count != 1)
             {
                 _unoPendingPlayers.Remove(player);
+            } else
+            {
+                ApplyUnoPenalty(player);
+                _unoPendingPlayers.Remove(player);
+                return true;
             }
-            ApplyUnoPenalty(player);
-            _unoPendingPlayers.Remove(player);
-            return true;
+            
         }
         return false;
     }
