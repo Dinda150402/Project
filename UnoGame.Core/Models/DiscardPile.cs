@@ -6,8 +6,8 @@ public class DiscardPile : IDiscardPile
 {
     public List<ICard> Cards { get; }
 
-    public DiscardPile(ICard initialCard)
+    public DiscardPile()
     {
-        Cards = new List<ICard> { initialCard };
+        Cards = new List<ICard> { };
     }
 }

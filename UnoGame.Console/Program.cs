@@ -50,8 +50,10 @@ class Program
         // 2. Bungkus ke dalam objek DrawPile sebelum dikirim ke controller
         IDrawPile drawPile = new DrawPile(startingCards);
 
+        IDiscardPile discardPile = new DiscardPile();
+
         // 3. Buat Instance GameController menggunakan IDrawPile
-        GameController game = new GameController(players, drawPile);
+        GameController game = new GameController(players, drawPile, discardPile);
 
         // State pengendali loop lokal
         bool isGameRunning = true;

@@ -1,8 +1,5 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
-using UnoGame.Core.Models;
 
 namespace UnoGame.Core.Controllers;
 
@@ -14,7 +11,7 @@ public class GameController
     private List<IPlayer> _players;
     private GameDirection _direction;
     private IDrawPile _drawPile;
-    private IDiscardPile? _discardPile;
+    private IDiscardPile _discardPile;
     private int _currentPlayerIndex;
     private ICard? _drawnCardThisTurn;
     private List<IPlayer> _unoPendingPlayers;
@@ -28,14 +25,14 @@ public class GameController
     public event Action<IPlayer>? OnGameEnded;
 
     //Constructor Declaration
-    public GameController(List<IPlayer> players, IDrawPile drawPile)
+    public GameController(List<IPlayer> players, IDrawPile drawPile, IDiscardPile discardPile)
     {
         _currentColor = null;
         _hands = new Dictionary<IPlayer, List<ICard>>();
         _players = players;
         _direction = GameDirection.ClockWise;
         _drawPile = drawPile;
-        _discardPile = null;
+        _discardPile = discardPile;
         _currentPlayerIndex = 0;
         _drawnCardThisTurn = null;
         _unoPendingPlayers = new List<IPlayer>();
@@ -70,7 +67,7 @@ public class GameController
 
             ICard starterCard = _drawPile.Cards[_drawPile.Cards.Count - 1];
             _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
-            _discardPile = new DiscardPile(starterCard);
+            _discardPile.Cards.Add(starterCard);
             _currentColor = starterCard.Color ?? CardColor.Red;
 
             if (starterCard.Value == CardValue.WildDrawFour)
@@ -117,7 +114,7 @@ public class GameController
 
         _hands[player].Remove(card);
 
-        _discardPile!.Cards.Add(card);
+        _discardPile.Cards.Add(card);
 
         _currentColor =
             (card.Value == CardValue.Wild || card.Value == CardValue.WildDrawFour)
@@ -224,7 +221,7 @@ public class GameController
 
     public ICard GetTopDiscardCard()
     {
-        return _discardPile!.Cards[_discardPile!.Cards.Count - 1];
+        return _discardPile.Cards[_discardPile.Cards.Count - 1];
     }
 
     public List<IPlayer> GetPlayers()
@@ -299,7 +296,7 @@ public class GameController
 
     private void RefillDrawPile()
     {
-        if (_discardPile!.Cards.Count <= 1)
+        if (_discardPile.Cards.Count <= 1)
             throw new InvalidOperationException("There is Not Enough Card Here");
 
         ICard topCard = _discardPile.Cards[_discardPile.Cards.Count - 1];
@@ -423,8 +420,8 @@ public class GameController
             _drawPile.Cards.AddRange(_hands[player]);
             _hands[player].Clear();
         }
-        _drawPile.Cards.AddRange(_discardPile!.Cards);
-        _discardPile!.Cards.Clear();
+        _drawPile.Cards.AddRange(_discardPile.Cards);
+        _discardPile.Cards.Clear();
 
         _currentColor = null;
         _direction = GameDirection.ClockWise;
