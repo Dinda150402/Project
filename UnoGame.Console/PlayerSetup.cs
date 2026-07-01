@@ -14,10 +14,10 @@ internal static class PlayerSetup
             new SelectionPrompt<string>()
                 .Title("Pilih mode pemain:")
                 .AddChoices(
-                    "✅ Gunakan pemain default (Alice, Bob, Charlie, Jack)",
-                    "✏️  Masukkan nama pemain sendiri"
+                    "  Gunakan pemain default (Alice, Bob, Charlie, Jack)",
+                    "  Masukkan nama pemain sendiri"
                 )
-        ) == "✅ Gunakan pemain default (Alice, Bob, Charlie, Jack)";
+        ) == " Gunakan pemain default (Alice, Bob, Charlie, Jack)";
 
         List<IPlayer> players = new List<IPlayer>();
 

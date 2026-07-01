@@ -25,7 +25,7 @@ internal class GamePlay
         if (!startResult.Success)
         {
             AnsiConsole.MarkupLine(
-                $"[red]❌ Game tidak bisa dimulai: {Markup.Escape(startResult.ErrorMessage ?? "")}[/]");
+                $"[red] Game tidak bisa dimulai: {Markup.Escape(startResult.ErrorMessage ?? "")}[/]");
             return;
         }
 
@@ -40,33 +40,31 @@ internal class GamePlay
             _currentPlayer = player;
         };
 
-        // Cek & minta UNO di sini (sebelum NextTurn dipanggil GameController),
-        // jadi prompt-nya nempel ke pemain yang BARU SAJA main, bukan pemain berikutnya.
         _game.OnCardPlayed += (player, card) =>
         {
             AnsiConsole.MarkupLine(
-                $"🃏 [bold]{GameRenderer.Esc(player.Name)}[/] memainkan kartu: {GameRenderer.CardMarkup(card)}");
+                $" [bold]{GameRenderer.Esc(player.Name)}[/] memainkan kartu: {GameRenderer.CardMarkup(card)}");
 
             if (_game.GetUnoPendingPlayers().Contains(player))
             {
                 bool calledUno = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title($"[yellow]{GameRenderer.Esc(player.Name)}, kartu kamu tersisa 1![/]")
-                        .AddChoices("✅ UNO!", "❌ Lewati")
-                ) == "✅ UNO!";
+                        .AddChoices(" UNO!", " Lewati")
+                ) == " UNO!";
 
                 if (calledUno)
                 {
                     GameResult unoResult = _game.CallUno(player);
                     if (unoResult.Success)
                     {
-                        AnsiConsole.MarkupLine("[green]✅ UNO berhasil dipanggil![/]");
+                        AnsiConsole.MarkupLine("[green] UNO berhasil dipanggil![/]");
                     }
                 }
                 else
                 {
                     AnsiConsole.MarkupLine(
-                        "[red]❌ Kamu lupa teriak UNO! Pemain lain bisa menangkapmu nanti.[/]");
+                        "[red] Kamu lupa teriak UNO! Pemain lain bisa menangkapmu nanti.[/]");
                 }
             }
         };
@@ -74,14 +72,14 @@ internal class GamePlay
         _game.OnRoundEnded += (player, score) =>
         {
             AnsiConsole.MarkupLine(
-                $"\n[green]🎉 Ronde selesai! {GameRenderer.Esc(player.Name)} menang ronde ini (+{score} poin).[/]");
+                $"\n[green] Ronde selesai! {GameRenderer.Esc(player.Name)} menang ronde ini (+{score} poin).[/]");
             AnsiConsole.MarkupLine(
                 $"[bold]Skor total {GameRenderer.Esc(player.Name)}: {player.Score}[/]\n");
             GameRenderer.PrintScoreboard(_game);
 
             if (player.Score >= 500)
             {
-                AnsiConsole.MarkupLine("\n[gold1]🔥 Skor 500 tercapai! Game akan segera berakhir...[/]");
+                AnsiConsole.MarkupLine("\n[gold1] Skor 500 tercapai! Game akan segera berakhir...[/]");
                 AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lihat hasil akhir...[/]");
                 Console.ReadLine();
                 return;
@@ -90,8 +88,8 @@ internal class GamePlay
             bool lanjut = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("\nLanjut ke ronde berikutnya?")
-                    .AddChoices("✅ Ya, lanjut ronde berikutnya", "🛑 Stop di sini")
-            ) == "✅ Ya, lanjut ronde berikutnya";
+                    .AddChoices(" Ya, lanjut ronde berikutnya", " Stop di sini")
+            ) == " Ya, lanjut ronde berikutnya";
 
             if (lanjut)
             {
@@ -102,7 +100,7 @@ internal class GamePlay
                 if (!nextRoundResult.Success)
                 {
                     AnsiConsole.MarkupLine(
-                        $"[red]❌ Gagal mulai ronde berikutnya: {Markup.Escape(nextRoundResult.ErrorMessage ?? "")}[/]");
+                        $"[red] Gagal mulai ronde berikutnya: {Markup.Escape(nextRoundResult.ErrorMessage ?? "")}[/]");
                     _isRunning = false;
                 }
             }
@@ -114,7 +112,7 @@ internal class GamePlay
 
                 AnsiConsole.Write(new FigletText("STOP").Centered().Color(Color.Red));
                 AnsiConsole.MarkupLine(
-                    $"\n[bold yellow]🏆 Skor tertinggi saat dihentikan: " +
+                    $"\n[bold yellow] Skor tertinggi saat dihentikan: " +
                     $"{GameRenderer.Esc(leader.Name)} dengan {leader.Score} poin![/]");
                 _isRunning = false;
             }
@@ -125,7 +123,7 @@ internal class GamePlay
             AnsiConsole.Clear();
             AnsiConsole.Write(new FigletText("GAME OVER").Centered().Color(Color.Gold1));
             AnsiConsole.MarkupLine(
-                $"\n[bold yellow]🏆 Pemenang akhir: " +
+                $"\n[bold yellow] Pemenang akhir: " +
                 $"{GameRenderer.Esc(winner.Name)} dengan {winner.Score} poin![/]");
             _isRunning = false;
         };
@@ -157,10 +155,10 @@ internal class GamePlay
                 new SelectionPrompt<string>()
                     .HighlightStyle(new Style(decoration: Decoration.Bold | Decoration.Underline))
                     .Title("Pilih tindakan:")
-                    .AddChoices("🃏 Mainkan Kartu", "🂠 Ambil Kartu")
+                    .AddChoices(" Mainkan Kartu", " Ambil Kartu")
             );
 
-            if (actionChoice == "🃏 Mainkan Kartu")
+            if (actionChoice == " Mainkan Kartu")
             {
                 HandlePlayCard(current, hand);
             }
@@ -227,7 +225,7 @@ internal class GamePlay
         if (!playResult.Success)
         {
             AnsiConsole.MarkupLine(
-                $"[red]⚠️ {Markup.Escape(playResult.ErrorMessage ?? "")}[/]");
+                $"[red] {Markup.Escape(playResult.ErrorMessage ?? "")}[/]");
             AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lanjut...[/]");
             Console.ReadLine();
         }
@@ -245,7 +243,7 @@ internal class GamePlay
         if (validCards.Count > 0)
         {
             AnsiConsole.MarkupLine(
-                "[yellow]⚠️ Anda masih punya kartu valid, tidak bisa mengambil kartu.[/]");
+                "[yellow] Anda masih punya kartu valid, tidak bisa mengambil kartu.[/]");
             AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lanjut...[/]");
             Console.ReadLine();
             return;
@@ -255,14 +253,14 @@ internal class GamePlay
         if (!drawResult.Success)
         {
             AnsiConsole.MarkupLine(
-                $"[red]⚠️ {Markup.Escape(drawResult.ErrorMessage ?? "")}[/]");
+                $"[red] {Markup.Escape(drawResult.ErrorMessage ?? "")}[/]");
             AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lanjut...[/]");
             Console.ReadLine();
             return;
         }
 
         ICard drawnCard = drawResult.Value;
-        AnsiConsole.MarkupLine($"\n🎴 Anda mengambil kartu: {GameRenderer.CardMarkup(drawnCard)}");
+        AnsiConsole.MarkupLine($"\n Anda mengambil kartu: {GameRenderer.CardMarkup(drawnCard)}");
 
         GameResult<List<ICard>> validAfterDrawResult = _game.GetValidCards(currentPlayer);
         if (!validAfterDrawResult.Success)
@@ -273,7 +271,7 @@ internal class GamePlay
         List<ICard> validCardsAfterDraw = validAfterDrawResult.Value;
         if (validCardsAfterDraw.Contains(drawnCard))
         {
-            AnsiConsole.MarkupLine("[green]✅ Kartu ini valid dan akan otomatis dimainkan![/]");
+            AnsiConsole.MarkupLine("[green] Kartu ini valid dan akan otomatis dimainkan![/]");
 
             CardColor? chosenColor = null;
             if (drawnCard.Value == CardValue.Wild || drawnCard.Value == CardValue.WildDrawFour)
@@ -291,14 +289,14 @@ internal class GamePlay
             if (!playResult.Success)
             {
                 AnsiConsole.MarkupLine(
-                    $"[red]⚠️ {Markup.Escape(playResult.ErrorMessage ?? "")}[/]");
+                    $"[red] {Markup.Escape(playResult.ErrorMessage ?? "")}[/]");
                 AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lanjut...[/]");
                 Console.ReadLine();
             }
         }
         else
         {
-            AnsiConsole.MarkupLine("[red]❌ Kartu tidak valid. Giliran Anda dilewati otomatis.[/]");
+            AnsiConsole.MarkupLine("[red] Kartu tidak valid. Giliran Anda dilewati otomatis.[/]");
             AnsiConsole.MarkupLine("[grey]Tekan ENTER untuk lanjut...[/]");
             Console.ReadLine();
 
@@ -306,7 +304,7 @@ internal class GamePlay
             if (!passResult.Success)
             {
                 AnsiConsole.MarkupLine(
-                    $"[red]⚠️ {Markup.Escape(passResult.ErrorMessage ?? "")}[/]");
+                    $"[red] {Markup.Escape(passResult.ErrorMessage ?? "")}[/]");
             }
         }
     }

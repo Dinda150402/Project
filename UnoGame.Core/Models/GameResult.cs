@@ -21,9 +21,7 @@ GameResult(false, errorMessage);
 public sealed class GameResult<T> : GameResult
 {
 public T Value { get; }
-private GameResult(bool success, T value, string? errorMessage) : base(success, errorMessage)
-{
-Value = value; }
+private GameResult(bool success, T value, string? errorMessage) : base(success, errorMessage) {Value = value; }
 public static GameResult<T> Ok(T value) => new GameResult<T>(true, value, null);
 public static new GameResult<T> Fail(string errorMessage) => new GameResult<T>(false, default!, errorMessage);
 }
