@@ -13,8 +13,7 @@ ErrorMessage = errorMessage;
 }
 public static GameResult Ok() => new GameResult(true, null);
 
-public static GameResult
-Fail(string errorMessage) => new
+public static GameResult Fail(string errorMessage) => new
 GameResult(false, errorMessage);
 }
 
