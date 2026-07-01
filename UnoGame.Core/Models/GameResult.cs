@@ -12,14 +12,8 @@ Success = success;
 ErrorMessage = errorMessage;
 }
 public static GameResult Ok() => new GameResult(true, null);
-
-public static GameResult Fail(string errorMessage) => new
-GameResult(false, errorMessage);
-}
-
-
-public sealed class GameResult<T> : GameResult
-{
+public static GameResult Fail(string errorMessage) => new GameResult(false, errorMessage);}
+public sealed class GameResult<T> : GameResult {
 public T Value { get; }
 private GameResult(bool success, T value, string? errorMessage) : base(success, errorMessage) {Value = value; }
 public static GameResult<T> Ok(T value) => new GameResult<T>(true, value, null);

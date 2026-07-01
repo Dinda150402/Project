@@ -6,7 +6,6 @@ namespace UnoGame.Core.Controllers;
 
 public class GameController
 {
-    // Private Fields
     private CardColor? _currentColor;
     private Dictionary<IPlayer, List<ICard>> _hands;
     private List<IPlayer> _players;
@@ -16,16 +15,12 @@ public class GameController
     private int _currentPlayerIndex;
     private ICard? _drawnCardThisTurn;
     private List<IPlayer> _unoPendingPlayers;
-
-    // Event Declarations
     public event Action<IPlayer>? OnTurnStarted;
     public event Action<IPlayer, ICard>? OnCardPlayed;
     public event Action<IPlayer>? OnUnoCalled;
     public event Action<IPlayer>? OnUnoPenaltyApplied;
     public event Action<IPlayer, int>? OnRoundEnded;
     public event Action<IPlayer>? OnGameEnded;
-
-    // Constructor
     public GameController(List<IPlayer> players, IDrawPile drawPile, IDiscardPile discardPile)
     {
         _currentColor = null;
@@ -38,8 +33,6 @@ public class GameController
         _drawnCardThisTurn = null;
         _unoPendingPlayers = new List<IPlayer>();
     }
-
-    // Public Methods
     public GameResult StartGame()
     {
         if (_players.Count < 2)
@@ -70,12 +63,10 @@ public class GameController
                 }
             }
         }
-
         ICard starterCard = _drawPile.Cards[_drawPile.Cards.Count - 1];
         _drawPile.Cards.RemoveAt(_drawPile.Cards.Count - 1);
         _discardPile.Cards.Add(starterCard);
         _currentColor = starterCard.Color ?? CardColor.Red;
-
         if (starterCard.Value == CardValue.WildDrawFour)
         {
             ICard newStarterCard = _drawPile.Cards[_drawPile.Cards.Count - 1];
@@ -105,7 +96,6 @@ public class GameController
 
         return GameResult.Ok();
     }
-
     public GameResult PlayCard(IPlayer player, ICard card, CardColor? chosenColor)
     {
         if (_players[_currentPlayerIndex] != player)
@@ -156,7 +146,6 @@ public class GameController
         NextTurn();
         return GameResult.Ok();
     }
-
     public GameResult<ICard> DrawCard(IPlayer player)
     {
         if (_players[_currentPlayerIndex] != player)
@@ -190,7 +179,6 @@ public class GameController
         _drawnCardThisTurn = drawnCard;
         return GameResult<ICard>.Ok(drawnCard);
     }
-
     public GameResult CallUno(IPlayer player)
     {
         if (!_unoPendingPlayers.Contains(player))
@@ -220,7 +208,6 @@ public class GameController
         _unoPendingPlayers.Remove(player);
         return true;
     }
-
     public GameResult PassTurn(IPlayer player)
     {
         if (_players[_currentPlayerIndex] != player)
@@ -252,7 +239,6 @@ public class GameController
 
         return GameResult<CardColor>.Ok(_currentColor.Value);
     }
-
     public ICard GetTopDiscardCard()
     {
         ICard topCard = _discardPile.Cards[_discardPile.Cards.Count - 1];
@@ -275,13 +261,11 @@ public class GameController
         List<ICard> handCopy = hand.AsReadOnly().ToList();
         return GameResult<List<ICard>>.Ok(handCopy);
     }
-
     public List<IPlayer> GetUnoPendingPlayers()
     {
         List<IPlayer> pendingPlayers = _unoPendingPlayers.ToList();
         return pendingPlayers;
     }
-
     public GameResult<List<ICard>> GetValidCards(IPlayer player)
     {
         if (!_hands.TryGetValue(player, out List<ICard>? hand))
@@ -300,7 +284,6 @@ public class GameController
 
         return GameResult<List<ICard>>.Ok(validCards);
     }
-
     public GameResult StartNextRound(IPlayer startingPlayer)
     {
         foreach (IPlayer player in _players)
@@ -321,8 +304,6 @@ public class GameController
         GameResult startResult = StartGame();
         return startResult;
     }
-
-    // Private Methods
     private bool IsValidPlay(ICard card)
     {
         ICard topCard = GetTopDiscardCard();
@@ -339,7 +320,6 @@ public class GameController
 
         return false;
     }
-
     private void Shuffle()
     {
         int n = _drawPile.Cards.Count;
@@ -354,7 +334,6 @@ public class GameController
             _drawPile.Cards[n] = temp;
         }
     }
-    
     private bool RefillDrawPile()
     {
         if (_discardPile.Cards.Count <= 1)
@@ -372,7 +351,6 @@ public class GameController
         Shuffle();
         return true;
     }
-
     private void ApplyCardEffect(ICard card)
     {
         int nextPlayerIndex =
@@ -426,7 +404,6 @@ public class GameController
                 break;
         }
     }
-
     private void NextTurn()
     {
         _drawnCardThisTurn = null;
@@ -457,7 +434,6 @@ public class GameController
 
         OnUnoPenaltyApplied?.Invoke(player);
     }
-
     private int CalculateRoundScore(IPlayer winner)
     {
         int score = 0;
@@ -477,7 +453,6 @@ public class GameController
 
         return score;
     }
-
     private void EndGame(IPlayer winner)
     {
         OnGameEnded?.Invoke(winner);

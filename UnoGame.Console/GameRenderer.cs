@@ -66,7 +66,6 @@ internal static class GameRenderer
         AnsiConsole.Write(statusTable);
         AnsiConsole.WriteLine();
     }
-
     public static void RenderHand(List<ICard> hand)
     {
         AnsiConsole.MarkupLine("[bold]Kartu di tangan Anda:[/]");
@@ -94,7 +93,6 @@ internal static class GameRenderer
         AnsiConsole.Write(handTable);
         AnsiConsole.WriteLine();
     }
-
     public static void PrintScoreboard(GameController game)
     {
         Table scoreTable = new Table()
@@ -114,7 +112,6 @@ internal static class GameRenderer
 
         AnsiConsole.Write(scoreTable);
     }
-
     public static void ShowIntermissionScreen(IPlayer nextPlayer)
     {
         AnsiConsole.MarkupLine("\n[grey]Tekan ENTER untuk melanjutkan...[/]");
@@ -146,7 +143,6 @@ internal static class GameRenderer
         AnsiConsole.MarkupLine(
             $"\n🔔 [bold]GILIRAN BARU:[/] Sekarang giliran [bold]{Esc(nextPlayer.Name)}[/]");
     }
-
     public static Panel CardPanel(ICard card, string footer)
     {
         string colorName = ColorName(card.Color);
@@ -161,7 +157,6 @@ internal static class GameRenderer
         panel.Width = 14;
         return panel;
     }
-
     public static Color GetSpectreColor(CardColor? color) => color switch
     {
         CardColor.Red => Color.Red,
@@ -170,14 +165,12 @@ internal static class GameRenderer
         CardColor.Yellow => Color.Yellow,
         _ => Color.Grey
     };
-
     public static string CardMarkup(ICard card)
     {
         string colorName = ColorName(card.Color);
         string markup = $"[bold {colorName}]{CardLabel(card)}[/]";
         return markup;
     }
-
     public static string ColorName(CardColor? color) => color switch
     {
         CardColor.Red => "red",
@@ -186,7 +179,6 @@ internal static class GameRenderer
         CardColor.Yellow => "yellow",
         _ => "grey"
     };
-
     public static string CardLabel(ICard card) => card.Value switch
     {
         CardValue.Zero => "0",
@@ -206,6 +198,5 @@ internal static class GameRenderer
         CardValue.WildDrawFour => "+4",
         _ => card.Value.ToString()
     };
-
     public static string Esc(string s) => Markup.Escape(s ?? "");
 }

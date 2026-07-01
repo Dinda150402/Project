@@ -16,7 +16,6 @@ internal class GamePlay
         _isRunning = true;
         _currentPlayer = null;
     }
-
     public void Run()
     {
         SubscribeEvents();
@@ -28,10 +27,8 @@ internal class GamePlay
                 $"[red] Game tidak bisa dimulai: {Markup.Escape(startResult.ErrorMessage ?? "")}[/]");
             return;
         }
-
         GameLoop();
     }
-
     private void SubscribeEvents()
     {
         _game.OnTurnStarted += (player) =>
@@ -68,7 +65,6 @@ internal class GamePlay
                 }
             }
         };
-
         _game.OnRoundEnded += (player, score) =>
         {
             AnsiConsole.MarkupLine(
@@ -117,7 +113,6 @@ internal class GamePlay
                 _isRunning = false;
             }
         };
-
         _game.OnGameEnded += (winner) =>
         {
             AnsiConsole.Clear();
@@ -128,7 +123,6 @@ internal class GamePlay
             _isRunning = false;
         };
     }
-
     private void GameLoop()
     {
         while (_isRunning)
@@ -168,7 +162,6 @@ internal class GamePlay
             }
         }
     }
-
     private void HandleUnoViolationCatch(IPlayer currentPlayer)
     {
         List<IPlayer> unoPending = _game.GetUnoPendingPlayers()
@@ -198,7 +191,6 @@ internal class GamePlay
         AnsiConsole.MarkupLine($"[green]Sukses! Anda menangkap {GameRenderer.Esc(target.Name)}.[/]");
         _game.CatchUnoViolation(target);
     }
-
     private void HandlePlayCard(IPlayer currentPlayer, List<ICard> hand)
     {
         ICard cardToPlay = AnsiConsole.Prompt(
@@ -230,7 +222,6 @@ internal class GamePlay
             Console.ReadLine();
         }
     }
-
     private void HandleDrawCard(IPlayer currentPlayer)
     {
         GameResult<List<ICard>> validCardsResult = _game.GetValidCards(currentPlayer);
