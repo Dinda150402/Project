@@ -1,8 +1,9 @@
 
 📸 Screenshot
-![Alt text](images/screenshot1.png)
-![Alt text](images/screenshot2.png)
-![Alt text](images/screenshot3.png)
-![Alt text](images/screenshot4.png)
-![Alt text](images/screenshot5.png)
-![Alt text](images/screenshot6.png)
+
+<img src ="images/screenshot1.png" width = "300">
+<img src ="images/screenshot2.png" width = "300">
+<img src ="images/screenshot3.png" width = "300">
+<img src ="images/screenshot4.png" width = "300">
+<img src ="images/screenshot5.png" width = "300">
+<img src ="images/screenshot6.png" width = "300">
