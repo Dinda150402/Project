@@ -5,11 +5,6 @@ using UnoGame.Core.Enums;
 using UnoGame.Core.Interfaces;
 using UnoGame.Core.Models;
 
-/// <summary>
-/// Bertanggung jawab penuh atas tampilan board UNO di terminal.
-/// Semua urusan "gimana bentuknya di layar" ada di sini —
-/// GamePlay.cs cukup manggil method di sini tanpa tahu detail rendering.
-/// </summary>
 internal static class GameRenderer
 {
     public static void RenderBoard(GameController game, IPlayer currentPlayer)
