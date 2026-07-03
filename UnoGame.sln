@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoGame.Console", "UnoGame.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoGame.Api", "UnoGame.Api\UnoGame.Api.csproj", "{51A9E5CE-26B2-49CC-9ED3-B5AFC976BB1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoGame.Tests", "UnoGame.Tests\UnoGame.Tests.csproj", "{EF727C71-9D33-4CEA-885F-1480901A7313}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoGame.Tests", "UnoGame.Tests\UnoGame.Tests.csproj", "{DD7686E1-EA48-454D-9FC2-0A73C0A84D90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +32,9 @@ Global
 		{51A9E5CE-26B2-49CC-9ED3-B5AFC976BB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51A9E5CE-26B2-49CC-9ED3-B5AFC976BB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51A9E5CE-26B2-49CC-9ED3-B5AFC976BB1B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF727C71-9D33-4CEA-885F-1480901A7313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF727C71-9D33-4CEA-885F-1480901A7313}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF727C71-9D33-4CEA-885F-1480901A7313}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF727C71-9D33-4CEA-885F-1480901A7313}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD7686E1-EA48-454D-9FC2-0A73C0A84D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD7686E1-EA48-454D-9FC2-0A73C0A84D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD7686E1-EA48-454D-9FC2-0A73C0A84D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD7686E1-EA48-454D-9FC2-0A73C0A84D90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

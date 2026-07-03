@@ -1,3 +1,4 @@
+using NUnit.Framework;
 namespace UnoGame.Tests;
 
 public class Tests
