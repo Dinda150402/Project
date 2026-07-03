@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UnoGame.Api\UnoGame.Api.csproj" />
+    <ProjectReference Include="..\UnoGame.Console\UnoGame.Console.csproj" />
     <ProjectReference Include="..\UnoGame.Core\UnoGame.Core.csproj" />
   </ItemGroup>
 

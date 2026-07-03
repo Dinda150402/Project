@@ -323,7 +323,7 @@ public class GameController
  
         return GameResult<CardColor>.Ok(_currentColor.Value);
     }
- 
+
     public ICard GetTopDiscardCard()
     {
         ICard topCard = _discardPile.Cards[_discardPile.Cards.Count - 1];
