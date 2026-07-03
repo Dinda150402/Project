@@ -19,15 +19,16 @@ internal static class DeckBuilder
         return cards;
     }
 
-    public static IDrawPile BuildDrawPileForTwoPlayers(
-        List<ICard> player1Hand,
-        List<ICard> player2Hand,
+    public static IDrawPile BuildDrawPileForPlayers(
+        List<List<ICard>> hands,
         ICard starterCard,
         List<ICard>? reserve = null)
     {
         List<ICard> popOrder = new List<ICard>();
-        popOrder.AddRange(player1Hand);
-        popOrder.AddRange(player2Hand);
+        foreach (List<ICard> hand in hands)
+        {
+            popOrder.AddRange(hand);
+        }
         popOrder.Add(starterCard);
 
         List<ICard> deck = new List<ICard>(popOrder);
@@ -39,5 +40,17 @@ internal static class DeckBuilder
         }
 
         return new DrawPile(deck);
+    }
+
+    public static IDrawPile BuildDrawPileForTwoPlayers(
+        List<ICard> player1Hand,
+        List<ICard> player2Hand,
+        ICard starterCard,
+        List<ICard>? reserve = null)
+    {
+        return BuildDrawPileForPlayers(
+            new List<List<ICard>> { player1Hand, player2Hand },
+            starterCard,
+            reserve);
     }
 }
